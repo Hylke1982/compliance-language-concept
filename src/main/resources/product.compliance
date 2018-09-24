@@ -1,0 +1,17 @@
+Version: 1.0.0
+
+Name: "Product name"
+Description: "Description"
+Type: "WebApplication"
+
+
+Control: "CTRL-1"
+Description: "Outside communication is secure in flight"
+
+
+Control: "CTRL-2"
+Description: "Communication is secure at rest"
+
+
+Control: "CTRL-3"
+Description: "Failing control"

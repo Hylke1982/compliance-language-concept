@@ -1,0 +1,91 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.github.jengelman.gradle.plugins:shadow:2.0.4"
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'antlr'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+
+
+description = """
+
+A concept for a compliancy language that can help to improve developer experience for DevOps teams
+
+"""
+
+boolean release = project.hasProperty('release') ? project.getProperty('release') : false
+def revision = release ? "" : '-SNAPSHOT'
+
+group = 'com.example.compliancy'
+version = '0.1.0' + revision
+
+compileJava {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+configurations {
+    compile {
+        extendsFrom = extendsFrom.findAll { it != configurations.antlr }
+    }
+}
+
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'com.example.compliance.ComplianceCLI'
+        )
+    }
+}
+
+shadowJar {
+    baseName = 'compliance'
+    classifier = null
+    version = null
+}
+
+dependencies {
+
+    antlr "org.antlr:antlr4:4.7.1"
+    compile "org.antlr:antlr4-runtime:4.7.1"
+    compile group: 'io.airlift', name: 'airline', version: '0.8'
+    compile group: 'commons-io', name: 'commons-io', version: '2.6'
+
+
+
+    // Use JUnit test framework
+    testImplementation 'junit:junit:4.12'
+}
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+    // Use jcenter for resolving your dependencies.
+    // You can declare any Maven/Ivy/file repository here.
+    jcenter()
+}
+
+
+generateGrammarSource {
+    maxHeapSize = "64m"
+    // Keep a copy of generated sources
+    doLast {
+        println "Copying generated grammar lexer/parser files to main directory."
+        copy {
+            from "${buildDir}/generated-src/antlr/main"
+            into "generated-src/main/java"
+        }
+    }
+}
+
+clean.doLast {
+    file('generated-src').deleteDir()
+}
