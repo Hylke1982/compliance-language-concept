@@ -61,9 +61,6 @@ public abstract class AbstractCommand implements Runnable {
 
             compliance = Optional.of(listener.getComplianceStructure());
 
-            for (ANTLRErrorListener listenerz : parser.getErrorListeners()) {
-                System.out.println(listenerz);
-            }
         } catch (IOException e) {
 
         }

@@ -15,6 +15,8 @@ import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.util.Optional;
 
+import static org.fusesource.jansi.Ansi.ansi;
+
 @Command(name = "check", description = "Run the compliancy checks")
 public class CheckCommand extends AbstractCommand {
 
@@ -37,30 +39,33 @@ public class CheckCommand extends AbstractCommand {
             if (compliance.isPresent()) {
                 for (final Compliance.ComplianceStructureRule rule : compliance.get().getRules()) {
                     final String control = rule.getControl();
-                    boolean success = false;
-                    System.out.println(String.format("Checking control \"%s\"", control));
+                    ReportGenerator.RunStatus runStatus = ReportGenerator.RunStatus.ERROR;
+                    Optional<String> error = Optional.empty();
+
 
                     if (definitionLoader.hasControl(control)) {
                         try {
                             definitionLoader.invokeControl(control);
-                            success = true;
+                            runStatus = ReportGenerator.RunStatus.SUCCESS;
                         } catch (final DefinitionInvocationException e) {
-                            System.err.println(e);
-                            errors = true;
+                            error = Optional.of(e.toString());
                         }
                     } else {
-                        System.out.println(String.format("Skipping control \"%s\", no definition found", control));
+                        error = Optional.of(String.format("Skipping control \"%s\", no definition found", control));
+                        runStatus = ReportGenerator.RunStatus.MISSING;
                     }
-                    reportBuilder.addTestCase(control, rule.getDescription(), BigDecimal.ONE, success);
+
+                    reportBuilder.addTestCase(control, rule.getDescription(), BigDecimal.ONE, runStatus, error);
                 }
             } else {
 
             }
 
 
-            final String output = reportBuilder.build().generate();
-            System.out.println(output);
-            writeToOutputFile(output);
+            final String outputConsole = reportBuilder.build().generate(true);
+            final String outputFile = reportBuilder.build().generate(false);
+            System.out.println(outputConsole);
+            writeToOutputFile(outputFile);
             // Exit 1 if errors
             if (errors && !ignoreErrors) {
                 System.exit(1);
@@ -70,8 +75,6 @@ public class CheckCommand extends AbstractCommand {
             System.exit(1);
         }
     }
-
-
 
 
 }

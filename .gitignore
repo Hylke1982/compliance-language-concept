@@ -1,3 +1,5 @@
+.gradle/
+generated-src/
 target/
 *.iml
 .idea/

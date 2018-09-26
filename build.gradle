@@ -59,6 +59,7 @@ dependencies {
     compile "org.antlr:antlr4-runtime:4.7.1"
     compile group: 'io.airlift', name: 'airline', version: '0.8'
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
+    compile group: 'org.fusesource.jansi', name: 'jansi', version: '1.17.1'
 
 
 

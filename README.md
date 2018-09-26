@@ -5,7 +5,6 @@ language and a command line tool that can help teams to become compliant but als
 compliance to have structured means of communicating that allows for automation and ease of use by a DevOps team.
 
 
-
 ## Disclaimer
 
 **This is conceptual idea of a CLI and language (DSL) for compliance and is intended to inspire. This example has many 
@@ -16,6 +15,13 @@ technical limitations**
 The command line tool is a tool that would be distributed to DevOps teams is used for initialize, validate, check and 
 upload proof of compliance.
 
+## Building the application
+
+Building the application can be done with.
+```bash
+./gradlew shadowJar
+```
+
 ## Example commands
 
 Sample commands for the compliance command line tool
@@ -23,12 +29,12 @@ Sample commands for the compliance command line tool
 
 **Validate the syntax of a compliance file**
 ```bash
-compliance validate --file product.compliance
+./compliance.sh validate --file product.compliance
 ```
 
 **Check compliance**
 ```bash
-compliance check --file product.compliance
+./compliance.sh check --file product.compliance
 ```
 
 
